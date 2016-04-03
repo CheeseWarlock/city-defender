@@ -1,0 +1,73 @@
+<!DOCTYPE html> <html> <head> <meta charset=utf-8>
+
+<style> 
+body { margin: 0;
+} 
+canvas { width: 800px;
+height: 600px; } 
+</style> </head> <body> <script src="lib/three.min.js"></script> <script> 
+scene = new THREE.Scene();
+
+var cubes = [];
+
+var directionalLight = new THREE.DirectionalLight( 0xff0000, 0.8 );
+directionalLight.position.set( 1, 1, 1 );
+scene.add( directionalLight );
+
+var light = new THREE.AmbientLight( 0xffffff, 0.1 ); // soft white light
+scene.add( light );
+scene.fog = new THREE.Fog( 0xffffff, 10, 40 );
+
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setClearColor( 0xffffff, 1);
+renderer.setSize( window.innerWidth - 1, window.innerHeight - 1 );
+
+document.body.appendChild( renderer.domElement );
+
+var texturePainting = new THREE.TextureLoader().load( "a.png", function() {
+	var materialPainting = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texturePainting } );
+	texturePainting.wrapS = THREE.RepeatWrapping;
+	texturePainting.wrapT = THREE.RepeatWrapping;
+	texturePainting.repeat.set( 10, 40 );
+	//texturePainting.magFilter = THREE.NearestFilter;
+
+	var geometry = new THREE.BoxGeometry( 9, 36, 9 );
+
+	for (var i=0;i<=3;i++) {
+		for (var j=0;j<=3;j++) {
+			var cube = new THREE.Mesh(geometry, materialPainting);
+			cube.position.x = i * 12;
+			cube.position.z = j * -12;
+			scene.add(cube);
+			cubes.push(cube);
+		}
+	}
+
+	var geometry = new THREE.PlaneGeometry(100, 100);
+	var texture = new THREE.MeshBasicMaterial({color: 0x4040404});
+	ground = new THREE.Mesh(geometry, texture);
+	ground.rotation.x = 3 * Math.PI / 2;
+	scene.add(ground);
+	ground.position.y = -18;
+
+	camera.position.z = 10;
+
+} );
+
+
+function render() {
+	requestAnimationFrame( render );
+	if (cubes) {
+		cubes.map(function(cube) {
+			cube.position.x -= 0.01;
+		})
+		
+	}
+
+	renderer.render( scene, camera );
+}
+
+render();
+
+ </script> </body> </html>
