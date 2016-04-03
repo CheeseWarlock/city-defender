@@ -8,13 +8,13 @@ height: 600px; }
 </style> </head> <body> <script src="lib/three.min.js"></script> <script> 
 scene = new THREE.Scene();
 
-var cubes = [];
+var buildings = [];
 
-var directionalLight = new THREE.DirectionalLight( 0xff0000, 0.8 );
-directionalLight.position.set( 1, 1, 1 );
+var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+directionalLight.position.set( 0, 1, 1 );
 scene.add( directionalLight );
 
-var light = new THREE.AmbientLight( 0xffffff, 0.1 ); // soft white light
+var light = new THREE.AmbientLight( 0xffffff, 0.8 ); // soft white light
 scene.add( light );
 scene.fog = new THREE.Fog( 0xffffff, 10, 40 );
 
@@ -26,21 +26,21 @@ renderer.setSize( window.innerWidth - 1, window.innerHeight - 1 );
 document.body.appendChild( renderer.domElement );
 
 var texturePainting = new THREE.TextureLoader().load( "a.png", function() {
-	var materialPainting = new THREE.MeshBasicMaterial( { color: 0xffffff, map: texturePainting } );
+	var materialPainting = new THREE.MeshLambertMaterial( { color: 0xffffff, map: texturePainting } );
 	texturePainting.wrapS = THREE.RepeatWrapping;
 	texturePainting.wrapT = THREE.RepeatWrapping;
 	texturePainting.repeat.set( 10, 40 );
-	//texturePainting.magFilter = THREE.NearestFilter;
+	texturePainting.magFilter = THREE.NearestFilter;
 
 	var geometry = new THREE.BoxGeometry( 9, 36, 9 );
 
 	for (var i=0;i<=3;i++) {
 		for (var j=0;j<=3;j++) {
-			var cube = new THREE.Mesh(geometry, materialPainting);
-			cube.position.x = i * 12;
-			cube.position.z = j * -12;
-			scene.add(cube);
-			cubes.push(cube);
+			var building = new THREE.Mesh(geometry, materialPainting);
+			building.position.x = i * 12;
+			building.position.z = j * -12;
+			scene.add(building);
+			buildings.push(building);
 		}
 	}
 
@@ -51,19 +51,14 @@ var texturePainting = new THREE.TextureLoader().load( "a.png", function() {
 	scene.add(ground);
 	ground.position.y = -18;
 
-	camera.position.z = 10;
+	camera.position.z = 5.8;
 
 } );
 
 
 function render() {
 	requestAnimationFrame( render );
-	if (cubes) {
-		cubes.map(function(cube) {
-			cube.position.x -= 0.01;
-		})
-		
-	}
+	camera.position.x += 0.01;
 
 	renderer.render( scene, camera );
 }
