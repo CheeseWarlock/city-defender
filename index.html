@@ -51,32 +51,34 @@ var texturePainting = new THREE.TextureLoader().load( "a.png", function() {
 	ground.rotation.x = 3 * Math.PI / 2;
 	scene.add(ground);
 	ground.position.y = -18;
-
-	camera.position.z = 5.5;
-
 } );
 
 
 function render() {
 	requestAnimationFrame( render );
+
+	distanceBack = 1.5;
+	buildingWidth = 4.5;
+
+	angling = -0.05;
 	
 	anim += 0.01;
 	if (anim <= 5) {
+		camera.rotation.y = angling;
 		camera.position.x = anim;
-		camera.position.z = 6;
+		camera.position.z = distanceBack + buildingWidth;
 	}
-	if (anim > 5 && anim < 6) {
-		var q = anim - 5;
-		camera.rotation.y = q * Math.PI / 2;
-		camera.position.x = 5 + Math.sin(q * Math.PI / 2);
-		camera.position.z = 5 + Math.cos(q * Math.PI / 2);
+	if (anim > buildingWidth && anim < buildingWidth + distanceBack) {
+		var q = (anim - buildingWidth) / distanceBack; // from 0 to 1
+		camera.rotation.y = q * Math.PI / 2 + angling;
+		camera.position.x = buildingWidth + distanceBack * Math.sin(q * Math.PI / 2);
+		camera.position.z = buildingWidth + distanceBack * Math.cos(q * Math.PI / 2);
+		console.log(buildingWidth * Math.cos(q * Math.PI / 2));
 	}
-	if (anim > 6) {
-		camera.position.x = 6;
-		camera.position.z = 5 - (anim - 6);
+	if (anim > buildingWidth + distanceBack) {
+		camera.position.x = buildingWidth + distanceBack;
+		camera.position.z = buildingWidth + distanceBack - anim + buildingWidth;
 	}
-
-	console.log(camera.position.x + ", " + camera.position.z);
 
 	renderer.render( scene, camera );
 }
