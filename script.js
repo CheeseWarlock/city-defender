@@ -26,7 +26,7 @@ unloaded = 5;
 
 loader.load("a.png", function(texture) {
 	loadedTextures["exterior"] = texture;
-	loadedMaterials["exterior"] = new THREE.MeshLambertMaterial( { map: texture, transparent: true, side: THREE.FrontSide } );
+	loadedMaterials["exterior"] = new THREE.MeshLambertMaterial( { map: texture, transparent: true, side: THREE.DoubleSide } );
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.repeat.set( 9, 36 );
@@ -79,6 +79,8 @@ function makeWallSet(x, z) {
 	makeWall(x - 4.5, z, -Math.PI/2, loadedMaterials["interior"]);
 	makeWall(x, z + 4.5, 0, loadedMaterials["interior"]);
 	makeWall(x, z - 4.5, Math.PI, loadedMaterials["interior"]);
+	makeWall(x, z, 0, new THREE.MeshBasicMaterial({color: 0x4040404}));
+	makeWall(x, z, Math.PI, new THREE.MeshBasicMaterial({color: 0x4040404}));
 }
 
 function makeWall(x, z, rotation, p) {
@@ -117,8 +119,8 @@ function loadingDone() {
 	scene.add(ground);
 	ground.position.y = -18;
 
-	var fairyGeom = new THREE.PlaneGeometry(.25, .25);
-	fairyThing = new THREE.Mesh(fairyGeom, loadedMaterials["fairy"]);
+	var fairyGeom = new THREE.CubeGeometry(.25, .125, .05);
+	fairyThing = new THREE.Mesh(fairyGeom, new THREE.MeshPhongMaterial());
 	fairyThing.position.z = 0;
 	fairyThing.position.x = 6;
 	scene.add(fairyThing);
@@ -132,7 +134,7 @@ function render() {
 
 	angling = -0.1;
 	
-	anim += 0.05;
+	anim += 0.01;
 	if (anim <= 5) {
 		camera.rotation.y = angling;
 		camera.position.x = anim;
@@ -151,7 +153,15 @@ function render() {
 
 	fairyThing.position.x = camera.position.x - Math.sin(camera.rotation.y) - 0.5 * Math.cos(camera.rotation.y);
 	fairyThing.position.z = camera.position.z - Math.cos(camera.rotation.y) + 0.5 * Math.sin(camera.rotation.y);
-	fairyThing.rotation.y = camera.rotation.y;
+
+	var qq = anim + 0.5;
+	if (qq <= 5) {
+		fairyThing.rotation.y = angling * -3;
+	}
+	if (qq > buildingWidth && qq < buildingWidth + distanceBack) {
+		var q = (qq - buildingWidth) / distanceBack;
+		fairyThing.rotation.y = q * Math.PI / 2 - angling * 3;
+	}
 
 	if (groundMirror) { groundMirror.render(); }
 	renderer.render( scene, camera );
