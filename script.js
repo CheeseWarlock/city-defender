@@ -1,10 +1,13 @@
-scene = new THREE.Scene();
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize( window.innerWidth - 1, window.innerHeight - 1 );
+document.body.appendChild( renderer.domElement );
 
 var buildings = [];
 var mirrors = [];
 var anim = 0;
 var groundMirror = false;
 
+scene = new THREE.Scene();
 var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
 directionalLight.position.set( 0, 1, 1 );
 scene.add( directionalLight );
@@ -14,33 +17,61 @@ scene.add( light );
 scene.fog = new THREE.Fog( 0xFF7CD3, 10, 40 );
 
 var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
-var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setClearColor( 0xFF7CD3, 1);
-renderer.setSize( window.innerWidth - 1, window.innerHeight - 1 );
-
-document.body.appendChild( renderer.domElement );
 
 loader = new THREE.TextureLoader();
+loadedTextures = {};
+loadedMaterials = {};
+unloaded = 4;
 
-texturePainting = loader.load( "a.png", function() {
-	blah = loader.load("b.png", function() {
-		interior = loader.load("a_interior.png", function() {
-			ceil = loader.load("ceil.png", function() {
-				loadingDone();
-			});
-		});
-	});
+loader.load("a.png", function(texture) {
+	loadedTextures["exterior"] = texture;
+	loadedMaterials["exterior"] = new THREE.MeshLambertMaterial( { map: texture, transparent: true, side: THREE.FrontSide } );
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+	texture.repeat.set( 9, 36 );
+	texture.magFilter = THREE.NearestFilter;
+	if (!--unloaded) loadingDone();
+});
+
+loader.load("a_interior.png", function(texture) {
+	loadedTextures["interior"] = texture;
+	loadedMaterials["interior"] = new THREE.MeshLambertMaterial( { map: texture, side: THREE.BackSide } );
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+	texture.repeat.set( 9, 36 );
+	texture.magFilter = THREE.NearestFilter;
+	if (!--unloaded) loadingDone();
+});
+
+loader.load("b.png", function(texture) {
+	loadedTextures["floor"] = texture;
+	loadedMaterials["floor"] = new THREE.MeshLambertMaterial( { map: texture, side: THREE.BackSide } );
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+	texture.magFilter = THREE.NearestFilter;
+	if (!--unloaded) loadingDone();
+});
+
+loader.load("ceil.png", function(texture) {
+	loadedTextures["ceiling"] = texture;
+	loadedMaterials["ceiling"] = new THREE.MeshLambertMaterial( { map: texture } );
+	texture.wrapS = THREE.RepeatWrapping;
+	texture.wrapT = THREE.RepeatWrapping;
+	texture.repeat.set(8, 8);
+	texture.magFilter = THREE.NearestFilter;
+	if (!--unloaded) loadingDone();
 });
 
 function makeWallSet(x, z) {
-	makeWall(x + 4.5, z, Math.PI/2, exteriorP);
-	makeWall(x - 4.5, z, -Math.PI/2, exteriorP);
-	makeWall(x, z + 4.5, 0, exteriorP);
-	makeWall(x, z - 4.5, Math.PI, exteriorP);
-	makeWall(x + 4.5, z, Math.PI/2, interiorP);
-	makeWall(x - 4.5, z, -Math.PI/2, interiorP);
-	makeWall(x, z + 4.5, 0, interiorP);
-	makeWall(x, z - 4.5, Math.PI, interiorP);
+	makeWall(x + 4.5, z, Math.PI/2, loadedMaterials["exterior"]);
+	makeWall(x - 4.5, z, -Math.PI/2, loadedMaterials["exterior"]);
+	makeWall(x, z + 4.5, 0, loadedMaterials["exterior"]);
+	makeWall(x, z - 4.5, Math.PI, loadedMaterials["exterior"]);
+	makeWall(x + 4.5, z, Math.PI/2, loadedMaterials["interior"]);
+	makeWall(x - 4.5, z, -Math.PI/2, loadedMaterials["interior"]);
+	makeWall(x, z + 4.5, 0, loadedMaterials["interior"]);
+	makeWall(x, z - 4.5, Math.PI, loadedMaterials["interior"]);
 }
 
 function makeWall(x, z, rotation, p) {
@@ -55,7 +86,7 @@ function makeWall(x, z, rotation, p) {
 function makeFloorSet(x, z) {
 	var floorGeometry = new THREE.PlaneGeometry(9, 9);
 	for (var y=-10;y<=10;y++) {
-		var floor = new THREE.Mesh(floorGeometry, (y > 0 ? ceilingP: floorP));
+		var floor = new THREE.Mesh(floorGeometry, loadedMaterials[y > 0 ? "ceiling": "floor"]);
 		floor.position.x = x;
 		floor.position.y = y;
 		floor.position.z = z;
@@ -65,27 +96,6 @@ function makeFloorSet(x, z) {
 }
 
 function loadingDone() {
-	exteriorP = new THREE.MeshLambertMaterial( { map: texturePainting, transparent: true, side: THREE.FrontSide } );
-	texturePainting.wrapS = THREE.RepeatWrapping;
-	texturePainting.wrapT = THREE.RepeatWrapping;
-	texturePainting.repeat.set( 9, 36 );
-	texturePainting.magFilter = THREE.NearestFilter;
-
-	interiorP = new THREE.MeshLambertMaterial( { map: interior, side: THREE.BackSide } );
-	interior.wrapS = THREE.RepeatWrapping;
-	interior.wrapT = THREE.RepeatWrapping;
-	interior.repeat.set( 9, 36 );
-	interior.magFilter = THREE.NearestFilter;
-
-	floorP = new THREE.MeshLambertMaterial( { map: blah, side: THREE.BackSide } );
-	blah.magFilter = THREE.NearestFilter;
-
-	ceilingP = new THREE.MeshLambertMaterial( { map: ceil } );
-	ceil.wrapS = THREE.RepeatWrapping;
-	ceil.wrapT = THREE.RepeatWrapping;
-	ceil.repeat.set(8, 8);
-	ceil.magFilter = THREE.NearestFilter;
-
 	for (var i=0;i<=5;i++) {
 		for (var j=0;j<=5;j++) {
 			makeWallSet(i * 12 - 24, j * 12 - 24);
@@ -109,7 +119,7 @@ function render() {
 
 	angling = -0.1;
 	
-	anim += 0.03;
+	anim += 0.01;
 	if (anim <= 5) {
 		camera.rotation.y = angling;
 		camera.position.x = anim;
