@@ -8,11 +8,11 @@ var anim = 0;
 var groundMirror = false;
 
 scene = new THREE.Scene();
-var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.2 );
+var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
 directionalLight.position.set( 0, 1, 1 );
 scene.add( directionalLight );
 
-var light = new THREE.AmbientLight( 0xffffff, 0.8 ); // soft white light
+var light = new THREE.AmbientLight( 0xffffff, 0.6 ); // soft white light
 scene.add( light );
 scene.fog = new THREE.Fog( 0xFF7CD3, 10, 40 );
 
