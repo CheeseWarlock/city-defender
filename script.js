@@ -22,7 +22,7 @@ renderer.setClearColor( 0xFF7CD3, 1);
 loader = new THREE.TextureLoader();
 loadedTextures = {};
 loadedMaterials = {};
-unloaded = 4;
+unloaded = 5;
 
 loader.load("a.png", function(texture) {
 	loadedTextures["exterior"] = texture;
@@ -59,6 +59,13 @@ loader.load("ceil.png", function(texture) {
 	texture.wrapS = THREE.RepeatWrapping;
 	texture.wrapT = THREE.RepeatWrapping;
 	texture.repeat.set(8, 8);
+	texture.magFilter = THREE.NearestFilter;
+	if (!--unloaded) loadingDone();
+});
+
+loader.load("fairy.png", function(texture) {
+	loadedTextures["fairy"] = texture;
+	loadedMaterials["fairy"] = new THREE.MeshLambertMaterial( { map: texture, transparent: true, side: THREE.DoubleSide } );
 	texture.magFilter = THREE.NearestFilter;
 	if (!--unloaded) loadingDone();
 });
@@ -109,6 +116,12 @@ function loadingDone() {
 	ground.rotation.x = 3 * Math.PI / 2;
 	scene.add(ground);
 	ground.position.y = -18;
+
+	var fairyGeom = new THREE.PlaneGeometry(.25, .25);
+	fairyThing = new THREE.Mesh(fairyGeom, loadedMaterials["fairy"]);
+	fairyThing.position.z = 0;
+	fairyThing.position.x = 6;
+	scene.add(fairyThing);
 }
 
 function render() {
@@ -119,7 +132,7 @@ function render() {
 
 	angling = -0.1;
 	
-	anim += 0.01;
+	anim += 0.05;
 	if (anim <= 5) {
 		camera.rotation.y = angling;
 		camera.position.x = anim;
@@ -135,6 +148,10 @@ function render() {
 		camera.position.x = buildingWidth + distanceBack;
 		camera.position.z = buildingWidth + distanceBack - anim + buildingWidth;
 	}
+
+	fairyThing.position.x = camera.position.x - Math.sin(camera.rotation.y) - 0.5 * Math.cos(camera.rotation.y);
+	fairyThing.position.z = camera.position.z - Math.cos(camera.rotation.y) + 0.5 * Math.sin(camera.rotation.y);
+	fairyThing.rotation.y = camera.rotation.y;
 
 	if (groundMirror) { groundMirror.render(); }
 	renderer.render( scene, camera );
