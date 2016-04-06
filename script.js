@@ -23,6 +23,8 @@ loader = new THREE.TextureLoader();
 loadedTextures = {};
 loadedMaterials = {};
 unloaded = 5;
+keys = {};
+offset = 0;
 
 loader.load("a.png", function(texture) {
 	loadedTextures["exterior"] = texture;
@@ -119,11 +121,19 @@ function loadingDone() {
 	scene.add(ground);
 	ground.position.y = -18;
 
-	var fairyGeom = new THREE.CubeGeometry(.25, .125, .05);
+	var fairyGeom = new THREE.CubeGeometry(.125, .075, .05);
 	fairyThing = new THREE.Mesh(fairyGeom, new THREE.MeshPhongMaterial());
 	fairyThing.position.z = 0;
 	fairyThing.position.x = 6;
 	scene.add(fairyThing);
+
+	window.onkeydown = function(e) {
+		keys[e.keyCode] = true;
+	};
+
+	window.onkeyup = function(e) {
+		keys[e.keyCode] = false;
+	};
 }
 
 function render() {
@@ -151,19 +161,23 @@ function render() {
 		camera.position.z = buildingWidth + distanceBack - anim + buildingWidth;
 	}
 
-	fairyThing.position.x = camera.position.x - Math.sin(camera.rotation.y) - 0.5 * Math.cos(camera.rotation.y);
-	fairyThing.position.z = camera.position.z - Math.cos(camera.rotation.y) + 0.5 * Math.sin(camera.rotation.y);
+	fairyThing.position.x = camera.position.x - Math.sin(camera.rotation.y) - offset * Math.cos(camera.rotation.y);
+	fairyThing.position.z = camera.position.z - Math.cos(camera.rotation.y) + offset * Math.sin(camera.rotation.y);
 
-	var qq = anim + 0.5;
+	var qq = anim + 0.2;
 	if (qq <= 5) {
-		fairyThing.rotation.y = angling * -3;
+		fairyThing.rotation.y = 0;
 	}
 	if (qq > buildingWidth && qq < buildingWidth + distanceBack) {
 		var q = (qq - buildingWidth) / distanceBack;
-		fairyThing.rotation.y = q * Math.PI / 2 - angling * 3;
+		fairyThing.rotation.y = q * Math.PI / 2;
 	}
 
-	if (groundMirror) { groundMirror.render(); }
+	if (keys[83]) fairyThing.position.y -= 0.01;
+	if (keys[87]) fairyThing.position.y += 0.01;
+	if (keys[65]) offset += 0.01;
+	if (keys[68]) offset -= 0.01;
+
 	renderer.render( scene, camera );
 }
 
