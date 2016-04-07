@@ -9,7 +9,7 @@ var groundMirror = false;
 
 scene = new THREE.Scene();
 var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.4 );
-directionalLight.position.set( 0, 1, 1 );
+directionalLight.position.set( 1, 3, 2 );
 scene.add( directionalLight );
 
 var light = new THREE.AmbientLight( 0xffffff, 0.6 ); // soft white light
@@ -25,6 +25,23 @@ loadedMaterials = {};
 unloaded = 5;
 keys = {};
 offset = 0;
+
+var renderer2 = new THREE.WebGLRenderer();
+renderer2.setSize(200, 200);
+document.body.appendChild( renderer2.domElement );
+var scene2 = new THREE.Scene();
+var light2 = new THREE.AmbientLight( 0xffffff, 0.6 );
+scene2.add( light2 );
+var camera2 = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
+camera2.position.z = 20;
+
+var cc = new THREE.Mesh(new THREE.PlaneGeometry(10,10), new THREE.MeshBasicMaterial({color: 0x404040}));
+
+scene2.add(cc);
+
+var dd = new THREE.Mesh(new THREE.PlaneGeometry(1,100), new THREE.MeshBasicMaterial({color: 0xff0000}));
+
+scene2.add(dd);
 
 loader.load("a.png", function(texture) {
 	loadedTextures["exterior"] = texture;
@@ -177,8 +194,11 @@ function render() {
 	if (keys[87]) fairyThing.position.y += 0.01;
 	if (keys[65]) offset += 0.01;
 	if (keys[68]) offset -= 0.01;
-
+	//renderer.autoClear = false;
+	//renderer.clear();
 	renderer.render( scene, camera );
+	//renderer.clearDepth();
+	renderer2.render(scene2, camera2);
 }
 
 render();
