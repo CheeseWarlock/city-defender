@@ -1,3 +1,7 @@
+BUILDING_WIDTH = 4.5;
+DISTANCE_BACK = 1.5;
+ANGLING = -0.1;
+
 SceneManager = {
 	scene: null,
 	lights: [],
@@ -72,6 +76,81 @@ BuildingFactory = {
 	}
 }
 
+Character = {
+	model: null,
+	camera: null,
+
+	setup: function(scene) {
+		// setup model
+		this.scene = scene;
+		var fairyGeom = new THREE.CubeGeometry(.125, .075, .05);
+		this.model = new THREE.Mesh(fairyGeom, new THREE.MeshPhongMaterial());
+		this.model.position.z = 0;
+		this.model.position.x = 6;
+		scene.add(this.model);
+
+		// setup camera
+		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+	},
+
+	update: function() {
+		anim += 0.01;
+		if (anim <= 5) {
+			this.camera.rotation.y = ANGLING;
+			this.camera.position.x = anim;
+			this.camera.position.z = DISTANCE_BACK + BUILDING_WIDTH;
+		}
+		if (anim > BUILDING_WIDTH && anim < BUILDING_WIDTH + DISTANCE_BACK) {
+			var q = (anim - BUILDING_WIDTH) / DISTANCE_BACK; // from 0 to 1
+			this.camera.rotation.y = q * Math.PI / 2 + ANGLING;
+			this.camera.position.x = BUILDING_WIDTH + DISTANCE_BACK * Math.sin(q * Math.PI / 2);
+			this.camera.position.z = BUILDING_WIDTH + DISTANCE_BACK * Math.cos(q * Math.PI / 2);
+		}
+		if (anim > BUILDING_WIDTH + DISTANCE_BACK) {
+			this.camera.position.x = BUILDING_WIDTH + DISTANCE_BACK;
+			this.camera.position.z = BUILDING_WIDTH + DISTANCE_BACK - anim + BUILDING_WIDTH;
+		}
+
+		Character.model.position.x = this.camera.position.x - Math.sin(this.camera.rotation.y) - offset * Math.cos(this.camera.rotation.y);
+		Character.model.position.z = this.camera.position.z - Math.cos(this.camera.rotation.y) + offset * Math.sin(this.camera.rotation.y);
+
+		var qq = anim + 0.2;
+		if (qq <= 5) {
+			Character.model.rotation.y = 0;
+		}
+		if (qq > BUILDING_WIDTH && qq < BUILDING_WIDTH + DISTANCE_BACK) {
+			var q = (qq - BUILDING_WIDTH) / DISTANCE_BACK;
+			Character.model.rotation.y = q * Math.PI / 2;
+		}
+
+		if (Controller.pressed(Controller.DOWN)) Character.model.position.y -= 0.01;
+		if (Controller.pressed(Controller.UP)) Character.model.position.y += 0.01;
+		if (Controller.pressed(Controller.RIGHT)) offset += 0.01;
+		if (Controller.pressed(Controller.LEFT)) offset -= 0.01;
+	}
+}
+
+Controller = {
+	UP: 87,
+	DOWN: 83,
+	LEFT: 68,
+	RIGHT: 65,
+	keys: {},
+	init: function(window) {
+		window.onkeydown = function(e) {
+			this.keys[e.keyCode] = true;
+		};
+
+		window.onkeyup = function(e) {
+			this.keys[e.keyCode] = false;
+		};
+	},
+	pressed: function(key) {
+		console.log(this.keys);
+		return this.keys[key];
+	}
+}
+
 SceneManager.init();
 SceneManager.addLights();
 scene = SceneManager.scene;
@@ -87,7 +166,7 @@ var groundMirror = false;
 
 
 
-var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
 renderer.setClearColor( 0xFF7CD3, 1);
 
 loader = new THREE.TextureLoader();
@@ -175,65 +254,17 @@ function loadingDone() {
 	scene.add(ground);
 	ground.position.y = -18;
 
-	var fairyGeom = new THREE.CubeGeometry(.125, .075, .05);
-	fairyThing = new THREE.Mesh(fairyGeom, new THREE.MeshPhongMaterial());
-	fairyThing.position.z = 0;
-	fairyThing.position.x = 6;
-	scene.add(fairyThing);
-
-	window.onkeydown = function(e) {
-		keys[e.keyCode] = true;
-	};
-
-	window.onkeyup = function(e) {
-		keys[e.keyCode] = false;
-	};
+	Character.setup(scene);
+	Controller.init(window);
 }
 
 function render() {
 	requestAnimationFrame( render );
-
-	distanceBack = 1.5;
-	buildingWidth = 4.5;
-
-	angling = -0.1;
+	Character.update();
 	
-	anim += 0.01;
-	if (anim <= 5) {
-		camera.rotation.y = angling;
-		camera.position.x = anim;
-		camera.position.z = distanceBack + buildingWidth;
-	}
-	if (anim > buildingWidth && anim < buildingWidth + distanceBack) {
-		var q = (anim - buildingWidth) / distanceBack; // from 0 to 1
-		camera.rotation.y = q * Math.PI / 2 + angling;
-		camera.position.x = buildingWidth + distanceBack * Math.sin(q * Math.PI / 2);
-		camera.position.z = buildingWidth + distanceBack * Math.cos(q * Math.PI / 2);
-	}
-	if (anim > buildingWidth + distanceBack) {
-		camera.position.x = buildingWidth + distanceBack;
-		camera.position.z = buildingWidth + distanceBack - anim + buildingWidth;
-	}
-
-	fairyThing.position.x = camera.position.x - Math.sin(camera.rotation.y) - offset * Math.cos(camera.rotation.y);
-	fairyThing.position.z = camera.position.z - Math.cos(camera.rotation.y) + offset * Math.sin(camera.rotation.y);
-
-	var qq = anim + 0.2;
-	if (qq <= 5) {
-		fairyThing.rotation.y = 0;
-	}
-	if (qq > buildingWidth && qq < buildingWidth + distanceBack) {
-		var q = (qq - buildingWidth) / distanceBack;
-		fairyThing.rotation.y = q * Math.PI / 2;
-	}
-
-	if (keys[83]) fairyThing.position.y -= 0.01;
-	if (keys[87]) fairyThing.position.y += 0.01;
-	if (keys[65]) offset += 0.01;
-	if (keys[68]) offset -= 0.01;
 	//renderer.autoClear = false;
 	//renderer.clear();
-	renderer.render( scene, camera );
+	renderer.render( scene, Character.camera );
 	//renderer.clearDepth();
 	//renderer2.render(scene2, camera2);
 }
