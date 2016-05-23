@@ -123,33 +123,38 @@ Character = {
 			Character.model.rotation.y = q * Math.PI / 2;
 		}
 
-		if (Controller.pressed(Controller.DOWN)) Character.model.position.y -= 0.01;
-		if (Controller.pressed(Controller.UP)) Character.model.position.y += 0.01;
-		if (Controller.pressed(Controller.RIGHT)) offset += 0.01;
-		if (Controller.pressed(Controller.LEFT)) offset -= 0.01;
+		if (window.controller.pressed(controller.DOWN)) Character.model.position.y -= 0.01;
+		if (window.controller.pressed(controller.UP)) Character.model.position.y += 0.01;
+		if (window.controller.pressed(controller.RIGHT)) offset += 0.01;
+		if (window.controller.pressed(controller.LEFT)) offset -= 0.01;
 	}
 }
 
-Controller = {
-	UP: 87,
-	DOWN: 83,
-	LEFT: 68,
-	RIGHT: 65,
-	keys: {},
-	init: function(window) {
+class Controller {
+	constructor() {
+		var self = this;
+
+		this.keys = {};
+		this.UP = 87;
+		this.DOWN = 83;
+		this.LEFT = 68;
+		this.RIGHT = 65;
+
 		window.onkeydown = function(e) {
-			this.keys[e.keyCode] = true;
+			self.keys[e.keyCode] = true;
 		};
 
 		window.onkeyup = function(e) {
-			this.keys[e.keyCode] = false;
+			self.keys[e.keyCode] = false;
 		};
-	},
-	pressed: function(key) {
-		console.log(this.keys);
+	}
+
+	pressed(key) {
 		return this.keys[key];
 	}
 }
+
+controller = new Controller();
 
 SceneManager.init();
 SceneManager.addLights();
@@ -243,7 +248,7 @@ loader.load("fairy.png", function(texture) {
 function loadingDone() {
 	for (var i=0;i<=5;i++) {
 		for (var j=0;j<=5;j++) {
-			BuildingFactory.makeBuilding(i * 12 - 24, j * 12 - 24, false);
+			BuildingFactory.makeBuilding(i * 12 - 24, j * 12 - 24, true);
 		}
 	}
 
@@ -255,7 +260,6 @@ function loadingDone() {
 	ground.position.y = -18;
 
 	Character.setup(scene);
-	Controller.init(window);
 }
 
 function render() {
