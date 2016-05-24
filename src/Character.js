@@ -12,38 +12,39 @@ class Character {
 		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 
 		// setup motion
-		this.anim = 0;
+		this.distance = 0;
+		this.direction = 0;
 	}
 
 	canTurn() {
-		return this.anim % 12 > 4.5 && this.anim % 12 < 6;
+		return this.distance % 12 > BUILDING_WIDTH && this.distance % 12 < 12 - BUILDING_WIDTH - DISTANCE_BACK;
 	}
 
 	update() {
-		this.anim += 0.01;
-		this.anim = this.anim % 12;
-		if (this.canTurn) {
+		this.direction = 0;
+		this.distance += MOVE_SPEED;
+		this.distance = this.distance % (12 - 1.5);
+		if (true) {
 			this.camera.rotation.y = ANGLING;
-			this.camera.position.x = this.anim;
+			this.camera.position.x = this.distance;
 			this.camera.position.z = DISTANCE_BACK + BUILDING_WIDTH;
 		}
-		if (this.anim > BUILDING_WIDTH && this.anim < BUILDING_WIDTH + DISTANCE_BACK) {
-			var q = (this.anim - BUILDING_WIDTH) / DISTANCE_BACK; // from 0 to 1
-			this.camera.rotation.y = q * Math.PI / 2 + ANGLING;
-			this.camera.position.x = BUILDING_WIDTH + DISTANCE_BACK * Math.sin(q * Math.PI / 2);
-			this.camera.position.z = BUILDING_WIDTH + DISTANCE_BACK * Math.cos(q * Math.PI / 2);
+		if (this.canTurn()) {
+			var turnProgress = (this.distance - BUILDING_WIDTH) / DISTANCE_BACK; // from 0 to 1
+			this.camera.rotation.y = turnProgress * Math.PI / 2 + ANGLING;
+			this.camera.position.x = BUILDING_WIDTH + DISTANCE_BACK * Math.sin(turnProgress * Math.PI / 2);
+			this.camera.position.z = BUILDING_WIDTH + DISTANCE_BACK * Math.cos(turnProgress * Math.PI / 2);
 		}
-		if (this.anim > BUILDING_WIDTH + DISTANCE_BACK) {
-			console.log('doin it');
+		if (this.distance % 12 > 12 - BUILDING_WIDTH - DISTANCE_BACK) {
 			this.camera.rotation.y = Math.PI / 2 + ANGLING;
 			this.camera.position.x = BUILDING_WIDTH + DISTANCE_BACK;
-			this.camera.position.z = BUILDING_WIDTH + DISTANCE_BACK - this.anim + BUILDING_WIDTH;
+			this.camera.position.z = BUILDING_WIDTH + DISTANCE_BACK - this.distance + BUILDING_WIDTH;
 		}
 
 		this.model.position.x = this.camera.position.x - Math.sin(this.camera.rotation.y) - offset * Math.cos(this.camera.rotation.y);
 		this.model.position.z = this.camera.position.z - Math.cos(this.camera.rotation.y) + offset * Math.sin(this.camera.rotation.y);
 
-		var qq = this.anim + 0.2;
+		var qq = this.distance + 0.2;
 		if (qq <= 5) {
 			this.model.rotation.y = 0;
 		}
