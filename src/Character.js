@@ -32,12 +32,22 @@ class Character {
 	}
 
 	enterIntersection() {
+		var intent = Math.floor(Math.random() * 3) - 1;
+		intent = 1;
 		this.inIntersection = true;
-		if (Math.random() > .5 /* INTENT LOGIC */) {
+		if (intent == -1) {
 			this.startAngle = Math.floor(this.direction + 0.2) % 4;
+			this.addOn = 1;
 			this.pivot = {
 				x: this.backing.x + BUILDING_WIDTH * (this.startAngle == 2 || this.startAngle == 3 ? -1 : 1),
 				z: this.backing.z + BUILDING_WIDTH * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1)
+			};
+		} else if (intent == 1) {
+			this.startAngle = Math.floor(this.direction + 0.2) % 4;
+			this.addOn = -1;
+			this.pivot = {
+				x: this.backing.x + 4.5,
+				z: this.backing.z + 7.5
 			};
 		} else {
 			this.backing = {
@@ -80,7 +90,8 @@ class Character {
 		}
 
 		if (this.isTurning()) {
-			this.direction = this.startAngle + (this.sectionDistance) / BUILDING_MARGIN / 2;
+			this.direction = this.startAngle + (this.addOn == -1 ? -this.sectionDistance : this.sectionDistance) / BUILDING_MARGIN / 2 + (this.addOn == -1 ? 2 : 0);
+			this.direction = (this.direction + 4) % 4;
 			this.center = {
 				x: this.pivot.x + BUILDING_MARGIN * Math.sin(this.direction * Math.PI / 2),
 				z: this.pivot.z + BUILDING_MARGIN * Math.cos(this.direction * Math.PI / 2)
@@ -91,6 +102,8 @@ class Character {
 				z: this.backing.z + (BUILDING_WIDTH + BUILDING_MARGIN) * Math.cos(this.direction * Math.PI / 2) - (this.sectionDistance - BUILDING_WIDTH) * Math.sin(this.direction * Math.PI / 2)
 			}
 		}
+
+		console.log(this.direction, this.center.x, this.center.z);
 
 		if (DEBUG_VIEW) {
 			this.camera.rotation.x = -1;
@@ -104,9 +117,10 @@ class Character {
 			this.camera.rotation.y = this.direction * Math.PI / 2 + ANGLING;
 		}
 
-		this.model.position.x = this.center.x - offset * Math.cos(this.direction * Math.PI / 2);
-		this.model.position.z = this.center.z + offset * Math.sin(this.direction * Math.PI / 2);
+		this.model.position.x = this.center.x;// - offset * Math.cos(this.direction * Math.PI / 2);
+		this.model.position.z = this.center.z;// + offset * Math.sin(this.direction * Math.PI / 2);
 
-		this.model.rotation.y = this.direction * Math.PI / 2;
+		//this.model.rotation.y = this.direction * Math.PI / 2;
+		console.log("d", this.model.position.x, this.model.position.z);
 	}
 }
