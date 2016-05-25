@@ -16,26 +16,40 @@ class Character {
 			x: null,
 			z: null
 		};
-		this.stopTurning();
+		this.exitIntersection();
 		this.sectionDistance = 0;
 		this.direction = 0;
-		this.zz = 0;
+		this.startAngle = 0;
 	}
+
+	// INTENTS
+	// -1	up/left
+	// 0	straight
+	// 1	down/right
 
 	isTurning() {
 		return !!this.pivot;
 	}
 
-	startTurning() {
-		this.zz = Math.floor(this.direction + 0.2) % 4;
-		this.pivot = {
-			x: this.backing.x + BUILDING_WIDTH * (this.zz == 2 || this.zz == 3 ? -1 : 1),
-			z: this.backing.z + BUILDING_WIDTH * (this.zz == 1 || this.zz == 2 ? -1 : 1)
-		};
-		this.backing = null;
+	enterIntersection() {
+		this.inIntersection = true;
+		if (false /* INTENT LOGIC */) {
+			this.startAngle = Math.floor(this.direction + 0.2) % 4;
+			this.pivot = {
+				x: this.backing.x + BUILDING_WIDTH * (this.startAngle == 2 || this.startAngle == 3 ? -1 : 1),
+				z: this.backing.z + BUILDING_WIDTH * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1)
+			};
+			this.backing = null;
+		} else {
+			this.backing = {
+				x: this.backing.x + 9,
+				z: this.backing.z
+			};
+		}
 	}
 
-	stopTurning() {
+	exitIntersection() {
+		this.inIntersection = false;
 		this.direction = Math.floor(this.direction + 0.2) % 4;
 		this.backing = {
 			x: 0,
@@ -53,23 +67,23 @@ class Character {
 		this.sectionDistance += MOVE_SPEED;
 		if (this.sectionDistance >= (this.isTurning() ? 3 : 9)) {
 			if (this.isTurning()) {
-				this.stopTurning();
+				this.exitIntersection();
 			} else {
-				this.startTurning();
+				this.enterIntersection();
 			}
 			this.sectionDistance = 0;
 		}
 
 		if (this.isTurning()) {
-			this.direction = this.zz + (this.sectionDistance) / BUILDING_MARGIN / 2;
+			this.direction = this.startAngle + (this.sectionDistance) / BUILDING_MARGIN / 2;
 			this.center = {
 				x: this.pivot.x + BUILDING_MARGIN * Math.sin(this.direction * Math.PI / 2),
 				z: this.pivot.z + BUILDING_MARGIN * Math.cos(this.direction * Math.PI / 2)
 			}
 		} else {
 			this.center = {
-				x: (BUILDING_WIDTH + BUILDING_MARGIN) * Math.sin(this.direction * Math.PI / 2) + (this.sectionDistance - BUILDING_WIDTH) * Math.cos(this.direction * Math.PI / 2),
-				z: (BUILDING_WIDTH + BUILDING_MARGIN) * Math.cos(this.direction * Math.PI / 2) - (this.sectionDistance - BUILDING_WIDTH) * Math.sin(this.direction * Math.PI / 2)
+				x: this.backing.x + (BUILDING_WIDTH + BUILDING_MARGIN) * Math.sin(this.direction * Math.PI / 2) + (this.sectionDistance - BUILDING_WIDTH) * Math.cos(this.direction * Math.PI / 2),
+				z: this.backing.z + (BUILDING_WIDTH + BUILDING_MARGIN) * Math.cos(this.direction * Math.PI / 2) - (this.sectionDistance - BUILDING_WIDTH) * Math.sin(this.direction * Math.PI / 2)
 			}
 		}
 
