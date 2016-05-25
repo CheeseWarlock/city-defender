@@ -1,7 +1,10 @@
 // Scene size configuration
 BUILDING_WIDTH = 4.5;
-DISTANCE_BACK = 1.5;
-ANGLING = -0.1;
+BUILDING_MARGIN = 1.5;
+CAMERA_DISTANCE_BACK = 1;
+ANGLING = -0.15;
+MOVE_SPEED = 0.01;
+DEBUG_VIEW = false;
 
 controller = new Controller();
 
@@ -14,6 +17,7 @@ BuildingFactory.setup(scene);
 var buildings = [];
 var mirrors = [];
 var anim = 0;
+var character = null;
 var groundMirror = false;
 
 renderer.setClearColor( 0xFF7CD3, 1);
@@ -92,7 +96,7 @@ loader.load("fairy.png", function(texture) {
 function loadingDone() {
 	for (var i=0;i<=5;i++) {
 		for (var j=0;j<=5;j++) {
-			BuildingFactory.makeBuilding(i * 12 - 24, j * 12 - 24, true);
+			BuildingFactory.makeBuilding(i * 12 - 24, j * 12 - 24, false);
 		}
 	}
 
@@ -109,11 +113,11 @@ function loadingDone() {
 
 function render() {
 	requestAnimationFrame( render );
-	character.update();
+	if (character != null) character.update();
 	
 	//renderer.autoClear = false;
 	//renderer.clear();
-	renderer.render( scene, character.camera );
+	if (character != null) renderer.render( scene, character.camera );
 	//renderer.clearDepth();
 	//renderer2.render(scene2, camera2);
 }

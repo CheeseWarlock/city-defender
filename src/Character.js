@@ -29,7 +29,7 @@ class Character {
 	startTurning() {
 		this.zz = Math.floor(this.direction + 0.2) % 4;
 		this.pivot = {
-			x: this.backing.x + BUILDING_WIDTH* (this.zz == 2 || this.zz == 3 ? -1 : 1),
+			x: this.backing.x + BUILDING_WIDTH * (this.zz == 2 || this.zz == 3 ? -1 : 1),
 			z: this.backing.z + BUILDING_WIDTH * (this.zz == 1 || this.zz == 2 ? -1 : 1)
 		};
 		this.backing = null;
@@ -74,8 +74,8 @@ class Character {
 		}
 
 		if (DEBUG_VIEW) {
-			this.camera.position.y = 10;
 			this.camera.rotation.x = -1;
+			this.camera.position.y = 10;
 			this.camera.position.x = 5;
 			this.camera.position.z = 6;
 			this.model.position.y = -16;
