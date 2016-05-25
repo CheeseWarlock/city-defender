@@ -3,9 +3,9 @@ BUILDING_WIDTH = 4.5;
 BUILDING_MARGIN = 1.5;
 CAMERA_DISTANCE_BACK = 1;
 ANGLING = -0.15;
-MOVE_SPEED = 0.06;
+MOVE_SPEED = 0.015;
 DEBUG_VIEW = false;
-DEBUG_LIGHTS = true;
+DEBUG_LIGHTS = false;
 
 controller = new Controller();
 
@@ -97,7 +97,7 @@ loader.load("fairy.png", function(texture) {
 function loadingDone() {
 	for (var i=0;i<=5;i++) {
 		for (var j=0;j<=5;j++) {
-			BuildingFactory.makeBuilding(i * 12 - 24, j * 12 - 24, false);
+			BuildingFactory.makeBuilding(i * 12 - 24, j * 12 - 24, true);
 		}
 	}
 

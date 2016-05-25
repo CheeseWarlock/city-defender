@@ -33,7 +33,6 @@ class Character {
 
 	enterIntersection() {
 		var intent = Math.floor(Math.random() * 3) - 1;
-		intent = 1;
 		this.inIntersection = true;
 		if (intent == -1) {
 			this.startAngle = Math.floor(this.direction + 0.2) % 4;
@@ -46,8 +45,8 @@ class Character {
 			this.startAngle = Math.floor(this.direction + 0.2) % 4;
 			this.addOn = -1;
 			this.pivot = {
-				x: this.backing.x + 4.5,
-				z: this.backing.z + 7.5
+				x: this.backing.x + 4.5 * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1),
+				z: this.backing.z + 7.5 * (this.startAngle == 2 || this.startAngle == 3 ? -1 : 1)
 			};
 		} else {
 			this.backing = {
@@ -62,8 +61,14 @@ class Character {
 		this.direction = Math.floor(this.direction + 0.2) % 4;
 		if (this.pivot) {
 			// exiting a turn
+			if (this.addOn == -1) {
+				this.backing = {
+					x: this.backing.x + 12 * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1),
+					z: this.backing.z + 12 * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1)
+				};
+			}
 		} else {
-			console.log(this.direction, ":", 3 * Math.cos(this.direction * Math.PI / 2), -3 * Math.sin(this.direction * Math.PI / 2));
+			//console.log(this.direction, ":", 3 * Math.cos(this.direction * Math.PI / 2), -3 * Math.sin(this.direction * Math.PI / 2));
 			this.backing = {
 				x: this.backing.x + 3 * Math.cos(this.direction * Math.PI / 2),
 				z: this.backing.z - 3 * Math.sin(this.direction * Math.PI / 2)
@@ -90,11 +95,11 @@ class Character {
 		}
 
 		if (this.isTurning()) {
-			this.direction = this.startAngle + (this.addOn == -1 ? -this.sectionDistance : this.sectionDistance) / BUILDING_MARGIN / 2 + (this.addOn == -1 ? 2 : 0);
+			this.direction = this.startAngle + (this.sectionDistance * this.addOn) / BUILDING_MARGIN / 2;
 			this.direction = (this.direction + 4) % 4;
 			this.center = {
-				x: this.pivot.x + BUILDING_MARGIN * Math.sin(this.direction * Math.PI / 2),
-				z: this.pivot.z + BUILDING_MARGIN * Math.cos(this.direction * Math.PI / 2)
+				x: this.pivot.x + BUILDING_MARGIN * Math.sin(this.direction * Math.PI / 2) * this.addOn,
+				z: this.pivot.z + BUILDING_MARGIN * Math.cos(this.direction * Math.PI / 2) * this.addOn
 			}
 		} else {
 			this.center = {
@@ -109,7 +114,7 @@ class Character {
 			this.camera.rotation.x = -1;
 			this.camera.position.y = 10;
 			this.camera.position.x = 5;
-			this.camera.position.z = 6;
+			this.camera.position.z = 9;
 			this.model.position.y = -16;
 		} else {
 			this.camera.position.x = this.center.x + CAMERA_DISTANCE_BACK * Math.sin(this.direction * Math.PI / 2);
@@ -117,10 +122,10 @@ class Character {
 			this.camera.rotation.y = this.direction * Math.PI / 2 + ANGLING;
 		}
 
-		this.model.position.x = this.center.x;// - offset * Math.cos(this.direction * Math.PI / 2);
-		this.model.position.z = this.center.z;// + offset * Math.sin(this.direction * Math.PI / 2);
+		this.model.position.x = this.center.x - offset * Math.cos(this.direction * Math.PI / 2);
+		this.model.position.z = this.center.z + offset * Math.sin(this.direction * Math.PI / 2);
 
-		//this.model.rotation.y = this.direction * Math.PI / 2;
-		console.log("d", this.model.position.x, this.model.position.z);
+		this.model.rotation.y = this.direction * Math.PI / 2;
+		//console.log("d", this.model.position.x, this.model.position.z);
 	}
 }
