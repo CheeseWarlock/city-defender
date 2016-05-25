@@ -3,8 +3,9 @@ BUILDING_WIDTH = 4.5;
 BUILDING_MARGIN = 1.5;
 CAMERA_DISTANCE_BACK = 1;
 ANGLING = -0.15;
-MOVE_SPEED = 0.01;
+MOVE_SPEED = 0.06;
 DEBUG_VIEW = false;
+DEBUG_LIGHTS = true;
 
 controller = new Controller();
 
