@@ -24,8 +24,16 @@ BuildingFactory = {
 		this.makeWall(x - 4.5, z, -Math.PI/2, loadedMaterials["interior"]);
 		this.makeWall(x, z + 4.5, 0, loadedMaterials["interior"]);
 		this.makeWall(x, z - 4.5, Math.PI, loadedMaterials["interior"]);
-		this.makeWall(x, z, 0, new THREE.MeshBasicMaterial({color: 0x4040404}));
-		this.makeWall(x, z, Math.PI, new THREE.MeshBasicMaterial({color: 0x4040404}));
+
+		this.makeWall(x, z + 1.5, 0, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x, z + 1.5, Math.PI, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x, z - 1.5, 0, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x, z - 1.5, Math.PI, new THREE.MeshBasicMaterial({color: 0x808080}));
+
+		this.makeWall(x + 1.5, z, Math.PI / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x + 1.5, z, Math.PI * 3 / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x - 1.5, z, Math.PI / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x - 1.5, z, Math.PI * 3 / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
 	},
 
 	makeWall: function(x, z, rotation, p) {
