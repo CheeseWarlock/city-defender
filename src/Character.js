@@ -16,16 +16,16 @@ class Character {
 			x: null,
 			z: null
 		};
-		this.exitIntersection();
+		
+		this.inIntersection = false;
 		this.sectionDistance = 0;
 		this.direction = 0;
 		this.startAngle = 0;
+		this.backing = {
+			x: 0,
+			z: 0
+		}
 	}
-
-	// INTENTS
-	// -1	up/left
-	// 0	straight
-	// 1	down/right
 
 	isTurning() {
 		return !!this.pivot;
@@ -33,17 +33,16 @@ class Character {
 
 	enterIntersection() {
 		this.inIntersection = true;
-		if (false /* INTENT LOGIC */) {
+		if (Math.random() > .5 /* INTENT LOGIC */) {
 			this.startAngle = Math.floor(this.direction + 0.2) % 4;
 			this.pivot = {
 				x: this.backing.x + BUILDING_WIDTH * (this.startAngle == 2 || this.startAngle == 3 ? -1 : 1),
 				z: this.backing.z + BUILDING_WIDTH * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1)
 			};
-			this.backing = null;
 		} else {
 			this.backing = {
-				x: this.backing.x + 9,
-				z: this.backing.z
+				x: this.backing.x + 9 * Math.cos(this.direction * Math.PI / 2),
+				z: this.backing.z - 9 * Math.sin(this.direction * Math.PI / 2)
 			};
 		}
 	}
@@ -51,10 +50,16 @@ class Character {
 	exitIntersection() {
 		this.inIntersection = false;
 		this.direction = Math.floor(this.direction + 0.2) % 4;
-		this.backing = {
-			x: 0,
-			z: 0
-		};
+		if (this.pivot) {
+			// exiting a turn
+		} else {
+			console.log(this.direction, ":", 3 * Math.cos(this.direction * Math.PI / 2), -3 * Math.sin(this.direction * Math.PI / 2));
+			this.backing = {
+				x: this.backing.x + 3 * Math.cos(this.direction * Math.PI / 2),
+				z: this.backing.z - 3 * Math.sin(this.direction * Math.PI / 2)
+			};
+		}
+		
 		this.pivot = null;
 	}
 
@@ -65,8 +70,8 @@ class Character {
 		if (window.controller.pressed(controller.LEFT)) offset -= 0.01;
 
 		this.sectionDistance += MOVE_SPEED;
-		if (this.sectionDistance >= (this.isTurning() ? 3 : 9)) {
-			if (this.isTurning()) {
+		if (this.sectionDistance >= (this.inIntersection ? 3 : 9)) {
+			if (this.inIntersection) {
 				this.exitIntersection();
 			} else {
 				this.enterIntersection();
