@@ -73,16 +73,17 @@ class Character {
 			}
 		}
 
-		console.log(this.direction);
-
-		this.camera.position.x = this.center.x + CAMERA_DISTANCE_BACK * Math.sin(this.direction * Math.PI / 2);
-		this.camera.position.z = this.center.z + CAMERA_DISTANCE_BACK * Math.cos(this.direction * Math.PI / 2);
-		this.camera.rotation.y = this.direction * Math.PI / 2 + ANGLING;
-		// this.camera.position.y = 10;
-		// this.camera.rotation.x = -1;
-		// this.camera.position.x = 5;
-		// this.camera.position.z = 6;
-		// this.model.position.y = -16;
+		if (DEBUG_VIEW) {
+			this.camera.position.y = 10;
+			this.camera.rotation.x = -1;
+			this.camera.position.x = 5;
+			this.camera.position.z = 6;
+			this.model.position.y = -16;
+		} else {
+			this.camera.position.x = this.center.x + CAMERA_DISTANCE_BACK * Math.sin(this.direction * Math.PI / 2);
+			this.camera.position.z = this.center.z + CAMERA_DISTANCE_BACK * Math.cos(this.direction * Math.PI / 2);
+			this.camera.rotation.y = this.direction * Math.PI / 2 + ANGLING;
+		}
 
 		this.model.position.x = this.center.x - offset * Math.cos(this.direction * Math.PI / 2);
 		this.model.position.z = this.center.z + offset * Math.sin(this.direction * Math.PI / 2);
