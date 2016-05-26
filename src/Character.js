@@ -44,9 +44,30 @@ class Character {
 		} else if (intent == 1) {
 			this.startAngle = Math.floor(this.direction + 0.2) % 4;
 			this.addOn = -1;
+			var xx;
+			var zz;
+			switch(this.startAngle) {
+				case 0:
+					xx = 4.5;
+					zz = 7.5;
+					break;
+				case 1:
+					xx = 7.5;
+					zz = -4.5;
+					break;
+				case 2:
+					xx = -4.5;
+					zz = -7.5;
+					break;
+				case 3:
+					xx = -7.5;
+					zz = 4.5;
+					break;
+
+			}
 			this.pivot = {
-				x: this.backing.x + 4.5 * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1),
-				z: this.backing.z + 7.5 * (this.startAngle == 2 || this.startAngle == 3 ? -1 : 1)
+				x: this.backing.x + xx,
+				z: this.backing.z + zz
 			};
 		} else {
 			this.backing = {
@@ -63,12 +84,11 @@ class Character {
 			// exiting a turn
 			if (this.addOn == -1) {
 				this.backing = {
-					x: this.backing.x + 12 * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1),
-					z: this.backing.z + 12 * (this.startAngle == 1 || this.startAngle == 2 ? -1 : 1)
+					x: this.backing.x + 12 * (this.startAngle == 3 || this.startAngle == 2 ? -1 : 1),
+					z: this.backing.z + 12 * (this.startAngle == 2 || this.startAngle == 1 ? -1 : 1)
 				};
 			}
 		} else {
-			//console.log(this.direction, ":", 3 * Math.cos(this.direction * Math.PI / 2), -3 * Math.sin(this.direction * Math.PI / 2));
 			this.backing = {
 				x: this.backing.x + 3 * Math.cos(this.direction * Math.PI / 2),
 				z: this.backing.z - 3 * Math.sin(this.direction * Math.PI / 2)
@@ -79,6 +99,10 @@ class Character {
 	}
 
 	update() {
+		var old = {
+			x: this.center.x,
+			z: this.center.z
+		}
 		if (window.controller.pressed(controller.DOWN)) this.model.position.y -= 0.01;
 		if (window.controller.pressed(controller.UP)) this.model.position.y += 0.01;
 		if (window.controller.pressed(controller.RIGHT)) offset += 0.01;
@@ -108,7 +132,12 @@ class Character {
 			}
 		}
 
-		console.log(this.direction, this.center.x, this.center.z);
+		if (Math.abs(old.x - this.center.x) > 2 || Math.abs(old.z - this.center.z) > 2) {
+			console.log("oh no~!");
+			console.log(old);
+			console.log(this.center);
+			console.log(Math.abs(old.x - this.center.x), Math.abs(old.z - this.center.z));
+		}
 
 		if (DEBUG_VIEW) {
 			this.camera.rotation.x = -1;
