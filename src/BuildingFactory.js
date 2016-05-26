@@ -1,4 +1,4 @@
-BuildingFactory = {
+var BuildingFactory = {
 	setup: function(scene) {
 		this.scene = scene;
 	},

@@ -1,4 +1,4 @@
-SceneManager = {
+var SceneManager = {
 	scene: null,
 	lights: [],
 

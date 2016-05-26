@@ -9,7 +9,7 @@ class Character {
 		scene.add(this.model);
 
 		// setup camera
-		this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 		// setup motion
 		this.center = {
@@ -163,6 +163,5 @@ class Character {
 		this.model.position.z = this.center.z + offset * Math.sin(this.direction * Math.PI / 2);
 
 		this.model.rotation.y = this.direction * Math.PI / 2;
-		//console.log("d", this.model.position.x, this.model.position.z);
 	}
 }
