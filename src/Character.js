@@ -33,9 +33,9 @@ class Character {
 
 	enterIntersection() {
 		var intent = 0;
-		if (window.controller.pressed(controller.UP) && !window.controller.pressed(controller.DOWN)) {
+		if (window.controller.combination([[controller.UP, true], [controller.DOWN, false], [controller.SHIFT, true]])) {
 			intent = -1;
-		} else if (window.controller.pressed(controller.DOWN) && !window.controller.pressed(controller.UP)) {
+		} else if (window.controller.combination([[controller.DOWN, true], [controller.UP, false], [controller.SHIFT, true]])) {
 			intent = 1;
 		} else {
 			intent = 0;
@@ -111,8 +111,8 @@ class Character {
 			x: this.center.x,
 			z: this.center.z
 		}
-		if (window.controller.pressed(controller.DOWN)) this.model.position.y -= 0.01;
-		if (window.controller.pressed(controller.UP)) this.model.position.y += 0.01;
+		if (window.controller.combination([[controller.DOWN, true], [controller.UP, false], [controller.SHIFT, false]])) this.model.position.y -= 0.01;
+		if (window.controller.combination([[controller.UP, true], [controller.DOWN, false], [controller.SHIFT, false]])) this.model.position.y += 0.01;
 		if (window.controller.pressed(controller.RIGHT)) offset += 0.01;
 		if (window.controller.pressed(controller.LEFT)) offset -= 0.01;
 
