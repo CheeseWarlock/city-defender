@@ -32,7 +32,15 @@ class Character {
 	}
 
 	enterIntersection() {
-		var intent = Math.floor(Math.random() * 3) - 1;
+		var intent = 0;
+		if (window.controller.pressed(controller.UP) && !window.controller.pressed(controller.DOWN)) {
+			intent = -1;
+		} else if (window.controller.pressed(controller.DOWN) && !window.controller.pressed(controller.UP)) {
+			intent = 1;
+		} else {
+			intent = 0;
+		}
+
 		this.inIntersection = true;
 		if (intent == -1) {
 			this.startAngle = Math.floor(this.direction + 0.2) % 4;
