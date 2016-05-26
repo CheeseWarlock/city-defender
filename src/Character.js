@@ -111,10 +111,10 @@ class Character {
 			x: this.center.x,
 			z: this.center.z
 		}
-		if (window.controller.combination([[controller.DOWN, true], [controller.UP, false], [controller.SHIFT, false]])) this.model.position.y -= 0.01;
-		if (window.controller.combination([[controller.UP, true], [controller.DOWN, false], [controller.SHIFT, false]])) this.model.position.y += 0.01;
-		if (window.controller.pressed(controller.RIGHT)) offset += 0.01;
-		if (window.controller.pressed(controller.LEFT)) offset -= 0.01;
+		if (window.controller.combination([[controller.DOWN, true], [controller.UP, false], [controller.SHIFT, false]]) && this.model.position.y >= -0.5) this.model.position.y -= 0.01;
+		if (window.controller.combination([[controller.UP, true], [controller.DOWN, false], [controller.SHIFT, false]]) && this.model.position.y <= 0.5) this.model.position.y += 0.01;
+		if (window.controller.pressed(controller.RIGHT) && offset <= 1) offset += 0.01;
+		if (window.controller.pressed(controller.LEFT) && offset >= -1) offset -= 0.01;
 
 		this.sectionDistance += MOVE_SPEED;
 		if (this.sectionDistance >= (this.inIntersection ? 3 : 9)) {
