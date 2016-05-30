@@ -2,6 +2,7 @@
 BUILDING_WIDTH = 4.5;
 BUILDING_MARGIN = 1.5;
 CAMERA_DISTANCE_BACK = 1;
+SPACING = 12;
 ANGLING = -0.15;
 MOVE_SPEED = 0.015;
 DEBUG_VIEW = false;
@@ -26,78 +27,69 @@ renderer.setClearColor( 0xFF7CD3, 1);
 loader = new THREE.TextureLoader();
 loadedTextures = {};
 loadedMaterials = {};
-unloaded = 5;
 keys = {};
 offset = 0;
 
-// var renderer2 = new THREE.WebGLRenderer();
-// renderer2.setSize(200, 200);
-// document.body.appendChild( renderer2.domElement );
-// var scene2 = new THREE.Scene();
-// var light2 = new THREE.AmbientLight( 0xffffff, 0.6 );
-// scene2.add( light2 );
-// var camera2 = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
-// camera2.position.z = 20;
 
-// var cc = new THREE.Mesh(new THREE.PlaneGeometry(10,10), new THREE.MeshBasicMaterial({color: 0x404040}));
+textures = [
+	{
+		file: "a.png",
+		name: "exterior",
+		repeats: [9, 36],
+		side: THREE.DoubleSide
+	},
+	{
+		file: "a.png",
+		name: "exterior_solid",
+		repeats: [9, 36],
+		side: THREE.DoubleSide
+	},
+	{
+		file: "a_interior.png",
+		name: "interior",
+		repeats: [9, 36],
+		side: THREE.BackSide
+	},
+	{
+		file: "b.png",
+		name: "floor",
+		repeats: [1, 1],
+		side: THREE.BackSide
+	},
+	{
+		file: "ceil.png",
+		name: "ceiling",
+		repeats: [8, 8],
+		side: THREE.FrontSide
+	}
+];
 
-// scene2.add(cc);
+unloaded = textures.length;
 
-// var dd = new THREE.Mesh(new THREE.PlaneGeometry(1,100), new THREE.MeshBasicMaterial({color: 0xff0000}));
-
-// scene2.add(dd);
-
-loader.load("a.png", function(texture) {
-	loadedTextures["exterior"] = texture;
-	loadedMaterials["exterior"] = new THREE.MeshLambertMaterial( { map: texture, transparent: true, side: THREE.DoubleSide } );
-	loadedMaterials["exterior_solid"] = new THREE.MeshLambertMaterial( { map: texture, side: THREE.DoubleSide } );
-	texture.wrapS = THREE.RepeatWrapping;
-	texture.wrapT = THREE.RepeatWrapping;
-	texture.repeat.set( 9, 36 );
-	texture.magFilter = THREE.NearestFilter;
-	if (!--unloaded) loadingDone();
-});
-
-loader.load("a_interior.png", function(texture) {
-	loadedTextures["interior"] = texture;
-	loadedMaterials["interior"] = new THREE.MeshLambertMaterial( { map: texture, side: THREE.BackSide } );
-	texture.wrapS = THREE.RepeatWrapping;
-	texture.wrapT = THREE.RepeatWrapping;
-	texture.repeat.set( 9, 36 );
-	texture.magFilter = THREE.NearestFilter;
-	if (!--unloaded) loadingDone();
-});
-
-loader.load("b.png", function(texture) {
-	loadedTextures["floor"] = texture;
-	loadedMaterials["floor"] = new THREE.MeshLambertMaterial( { map: texture, side: THREE.BackSide } );
-	texture.wrapS = THREE.RepeatWrapping;
-	texture.wrapT = THREE.RepeatWrapping;
-	texture.magFilter = THREE.NearestFilter;
-	if (!--unloaded) loadingDone();
-});
-
-loader.load("ceil.png", function(texture) {
-	loadedTextures["ceiling"] = texture;
-	loadedMaterials["ceiling"] = new THREE.MeshLambertMaterial( { map: texture } );
-	texture.wrapS = THREE.RepeatWrapping;
-	texture.wrapT = THREE.RepeatWrapping;
-	texture.repeat.set(8, 8);
-	texture.magFilter = THREE.NearestFilter;
-	if (!--unloaded) loadingDone();
-});
-
-loader.load("fairy.png", function(texture) {
-	loadedTextures["fairy"] = texture;
-	loadedMaterials["fairy"] = new THREE.MeshLambertMaterial( { map: texture, transparent: true, side: THREE.DoubleSide } );
-	texture.magFilter = THREE.NearestFilter;
-	if (!--unloaded) loadingDone();
+textures.forEach(function(texture) {
+	var _texture = texture;
+	loader.load(texture.file, function(loadedTexture) {
+		loadedTextures[_texture.name] = loadedTexture;
+		loadedMaterials[_texture.name] = new THREE.MeshLambertMaterial(
+			{
+				map: loadedTexture,
+				side: _texture.side
+			}
+		);
+		loadedTexture.wrapS = THREE.RepeatWrapping;
+		loadedTexture.wrapT = THREE.RepeatWrapping;
+		loadedTexture.repeat.set(_texture.repeats[0], _texture.repeats[1]);
+		loadedTexture.magFilter = THREE.NearestFilter;
+		if (!--unloaded) loadingDone();
+	});
 });
 
 function loadingDone() {
-	for (var i=0;i<=5;i++) {
-		for (var j=0;j<=5;j++) {
-			BuildingFactory.makeBuilding(i * 12 - 24, j * 12 - 24, true);
+	for (var i=0;i<5;i++) {
+		for (var j=0;j<5;j++) {
+			BuildingFactory.makeBuilding(i * SPACING - SPACING * 2,
+										 j * SPACING - SPACING * 2,
+										 false);
 		}
 	}
 
@@ -110,17 +102,13 @@ function loadingDone() {
 
 	window.character = new Character();
 	character.setup(scene);
+
+	render();
 }
 
 function render() {
 	requestAnimationFrame( render );
 	if (character != null) character.update();
-	
-	//renderer.autoClear = false;
-	//renderer.clear();
 	if (character != null) renderer.render( scene, character.camera );
-	//renderer.clearDepth();
-	//renderer2.render(scene2, camera2);
 }
 
-render();
