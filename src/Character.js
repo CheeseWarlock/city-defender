@@ -166,7 +166,9 @@ class Character {
 		this.model.rotation.y = this.direction * Math.PI / 2;
 
 		// pew pew
-		if (window.controller.pressed(controller.SPACE)) {
+		if (this.cooldown) this.cooldown--;
+		if (!this.cooldown && window.controller.pressed(controller.SPACE)) {
+			this.cooldown = 5;
 			var bullet = new Bullet(this.model.position.x, this.model.position.y, this.model.position.z, this.direction);
 			scene.add(bullet.model);
 			this.bullets.push(bullet);
