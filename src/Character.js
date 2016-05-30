@@ -7,9 +7,10 @@ class Character {
 		this.model.position.z = 0;
 		this.model.position.x = 6;
 		scene.add(this.model);
+		this.bullets = [];
 
 		// setup camera
-		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 50);
 
 		// setup motion
 		this.center = {
@@ -163,5 +164,12 @@ class Character {
 		this.model.position.z = this.center.z + offset * Math.sin(this.direction * Math.PI / 2);
 
 		this.model.rotation.y = this.direction * Math.PI / 2;
+
+		// pew pew
+		if (window.controller.pressed(controller.SPACE)) {
+			var bullet = new Bullet(this.model.position.x, this.model.position.y, this.model.position.z, this.direction);
+			scene.add(bullet.model);
+			this.bullets.push(bullet);
+		}
 	}
 }

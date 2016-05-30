@@ -3,6 +3,7 @@ textures = [
 		file: "a.png",
 		name: "exterior",
 		repeats: [9, 36],
+		transparent: true,
 		side: THREE.DoubleSide
 	},
 	{
@@ -43,7 +44,8 @@ textures.forEach(function(texture) {
 		loadedMaterials[_texture.name] = new THREE.MeshLambertMaterial(
 			{
 				map: loadedTexture,
-				side: _texture.side
+				side: _texture.side,
+				transparent: !!_texture.transparent
 			}
 		);
 		loadedTexture.wrapS = THREE.RepeatWrapping;
@@ -59,7 +61,7 @@ function loadingDone() {
 		for (var j=0;j<5;j++) {
 			BuildingFactory.makeBuilding(i * SPACING - SPACING * 2,
 										 j * SPACING - SPACING * 2,
-										 false);
+										 true);
 		}
 	}
 

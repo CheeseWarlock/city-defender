@@ -29,7 +29,12 @@ offset = 0;
 
 function render() {
 	requestAnimationFrame( render );
-	if (character != null) character.update();
+	if (character != null) {
+		character.update();
+		character.bullets.forEach(function(bullet) {
+			bullet.update();
+		});
+	}
 	if (character != null) renderer.render( scene, character.camera );
 }
 

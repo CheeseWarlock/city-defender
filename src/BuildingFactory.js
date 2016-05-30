@@ -8,32 +8,32 @@ var BuildingFactory = {
 			this.makeWallSet(x, z);
 			this.makeFloorSet(x, z);
 		} else {
-			this.makeWall(x + 4.5, z, Math.PI/2, loadedMaterials["exterior_solid"]);
-			this.makeWall(x - 4.5, z, -Math.PI/2, loadedMaterials["exterior_solid"]);
-			this.makeWall(x, z + 4.5, 0, loadedMaterials["exterior_solid"]);
-			this.makeWall(x, z - 4.5, Math.PI, loadedMaterials["exterior_solid"]);
+			this.makeWall(x + BUILDING_WIDTH, z, Math.PI/2, loadedMaterials["exterior_solid"]);
+			this.makeWall(x - BUILDING_WIDTH, z, -Math.PI/2, loadedMaterials["exterior_solid"]);
+			this.makeWall(x, z + BUILDING_WIDTH, 0, loadedMaterials["exterior_solid"]);
+			this.makeWall(x, z - BUILDING_WIDTH, Math.PI, loadedMaterials["exterior_solid"]);
 		}
 	},
 
 	makeWallSet: function(x, z) {
-		this.makeWall(x + 4.5, z, Math.PI/2, loadedMaterials["exterior"]);
-		this.makeWall(x - 4.5, z, -Math.PI/2, loadedMaterials["exterior"]);
-		this.makeWall(x, z + 4.5, 0, loadedMaterials["exterior"]);
-		this.makeWall(x, z - 4.5, Math.PI, loadedMaterials["exterior"]);
-		this.makeWall(x + 4.5, z, Math.PI/2, loadedMaterials["interior"]);
-		this.makeWall(x - 4.5, z, -Math.PI/2, loadedMaterials["interior"]);
-		this.makeWall(x, z + 4.5, 0, loadedMaterials["interior"]);
-		this.makeWall(x, z - 4.5, Math.PI, loadedMaterials["interior"]);
+		this.makeWall(x + BUILDING_WIDTH, z, Math.PI/2, loadedMaterials["exterior"]);
+		this.makeWall(x - BUILDING_WIDTH, z, -Math.PI/2, loadedMaterials["exterior"]);
+		this.makeWall(x, z + BUILDING_WIDTH, 0, loadedMaterials["exterior"]);
+		this.makeWall(x, z - BUILDING_WIDTH, Math.PI, loadedMaterials["exterior"]);
+		this.makeWall(x + BUILDING_WIDTH, z, Math.PI/2, loadedMaterials["interior"]);
+		this.makeWall(x - BUILDING_WIDTH, z, -Math.PI/2, loadedMaterials["interior"]);
+		this.makeWall(x, z + BUILDING_WIDTH, 0, loadedMaterials["interior"]);
+		this.makeWall(x, z - BUILDING_WIDTH, Math.PI, loadedMaterials["interior"]);
 
-		this.makeWall(x, z + 1.5, 0, new THREE.MeshBasicMaterial({color: 0x808080}));
-		this.makeWall(x, z + 1.5, Math.PI, new THREE.MeshBasicMaterial({color: 0x808080}));
-		this.makeWall(x, z - 1.5, 0, new THREE.MeshBasicMaterial({color: 0x808080}));
-		this.makeWall(x, z - 1.5, Math.PI, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x, z + BUILDING_MARGIN, 0, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x, z + BUILDING_MARGIN, Math.PI, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x, z - BUILDING_MARGIN, 0, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x, z - BUILDING_MARGIN, Math.PI, new THREE.MeshBasicMaterial({color: 0x808080}));
 
-		this.makeWall(x + 1.5, z, Math.PI / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
-		this.makeWall(x + 1.5, z, Math.PI * 3 / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
-		this.makeWall(x - 1.5, z, Math.PI / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
-		this.makeWall(x - 1.5, z, Math.PI * 3 / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x + BUILDING_MARGIN, z, Math.PI / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x + BUILDING_MARGIN, z, Math.PI * 3 / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x - BUILDING_MARGIN, z, Math.PI / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
+		this.makeWall(x - BUILDING_MARGIN, z, Math.PI * 3 / 2, new THREE.MeshBasicMaterial({color: 0x808080}));
 	},
 
 	makeWall: function(x, z, rotation, p) {
