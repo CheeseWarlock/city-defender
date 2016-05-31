@@ -27,6 +27,10 @@ class Character {
 			x: 0,
 			z: 0
 		}
+
+		var mb = new THREE.CubeGeometry(2, 1.3, .1);
+		this.moveBox = new THREE.Mesh(mb, new THREE.MeshPhongMaterial({ color: 0xff6666, transparent: true }));
+		scene.add(this.moveBox);
 	}
 
 	isTurning() {
@@ -113,8 +117,8 @@ class Character {
 			x: this.center.x,
 			z: this.center.z
 		}
-		if (window.controller.combination([[controller.DOWN, true], [controller.UP, false], [controller.SHIFT, false]]) && this.model.position.y >= -0.5) this.model.position.y -= 0.01;
-		if (window.controller.combination([[controller.UP, true], [controller.DOWN, false], [controller.SHIFT, false]]) && this.model.position.y <= 0.5) this.model.position.y += 0.01;
+		if (window.controller.combination([[controller.DOWN, true], [controller.UP, false], [controller.SHIFT, false]]) && this.model.position.y >= -0.65) this.model.position.y -= 0.01;
+		if (window.controller.combination([[controller.UP, true], [controller.DOWN, false], [controller.SHIFT, false]]) && this.model.position.y <= 0.65) this.model.position.y += 0.01;
 		if (window.controller.pressed(controller.RIGHT) && this.offset <= 1) this.offset += 0.01;
 		if (window.controller.pressed(controller.LEFT) && this.offset >= -1) this.offset -= 0.01;
 
@@ -166,6 +170,13 @@ class Character {
 		this.model.position.z = this.center.z + this.offset * Math.sin(this.direction * Math.PI / 2);
 
 		this.model.rotation.y = this.direction * Math.PI / 2;
+
+		this.moveBox.position.x = this.center.x;
+		this.moveBox.position.z = this.center.z;
+
+		this.moveBox.rotation.y = this.direction * Math.PI / 2;
+
+		this.moveBox.material.opacity = Math.max(Math.abs(this.offset) - .85, Math.abs(this.model.position.y) - .5);
 
 		// pew pew
 		if (this.cooldown) this.cooldown--;

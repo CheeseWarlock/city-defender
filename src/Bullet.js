@@ -1,3 +1,5 @@
+BULLET_SPEED = 0.06;
+
 class Bullet {
 	constructor(x, y, z, angle) {
 		this.angle = angle;
@@ -12,7 +14,7 @@ class Bullet {
 	}
 
 	update() {
-		this.model.position.x += Math.cos(this.angle * Math.PI / 2) * 0.025;
-		this.model.position.z -= Math.sin(this.angle * Math.PI / 2) * 0.025;
+		this.model.position.x += Math.cos(this.angle * Math.PI / 2) * BULLET_SPEED;
+		this.model.position.z -= Math.sin(this.angle * Math.PI / 2) * BULLET_SPEED;
 	}
 }
