@@ -17,24 +17,19 @@ renderer = SceneManager.renderer;
 BuildingFactory.setup(scene);
 
 var buildings = [];
-var mirrors = [];
 var anim = 0;
 var character = null;
-var groundMirror = false;
 
-renderer.setClearColor( 0xFF7CD3, 1);
-
-keys = {};
-offset = 0;
+renderer.setClearColor(0xFF7CD3, 1);
 
 function render() {
-	requestAnimationFrame( render );
+	requestAnimationFrame(render);
 	if (character != null) {
 		character.update();
 		character.bullets.forEach(function(bullet) {
 			bullet.update();
 		});
 	}
-	if (character != null) renderer.render( scene, character.camera );
+	if (character != null) renderer.render(scene, character.camera);
 }
 

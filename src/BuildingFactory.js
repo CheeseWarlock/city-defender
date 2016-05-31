@@ -37,7 +37,7 @@ var BuildingFactory = {
 	},
 
 	makeWall: function(x, z, rotation, p) {
-		var wallGeometry = new THREE.PlaneGeometry(9, 36);
+		var wallGeometry = new THREE.PlaneGeometry(BUILDING_WIDTH * 2, BUILDING_WIDTH * 8);
 		var wall = new THREE.Mesh(wallGeometry, p);
 		wall.rotation.y = rotation;
 		wall.position.x = x;
@@ -46,7 +46,7 @@ var BuildingFactory = {
 	},
 
 	makeFloorSet: function(x, z) {
-		var floorGeometry = new THREE.PlaneGeometry(9, 9);
+		var floorGeometry = new THREE.PlaneGeometry(BUILDING_WIDTH * 2, BUILDING_WIDTH * 2);
 		for (var y=-10;y<=10;y++) {
 			var floor = new THREE.Mesh(floorGeometry, loadedMaterials[y > 0 ? "ceiling": "floor"]);
 			floor.position.x = x;

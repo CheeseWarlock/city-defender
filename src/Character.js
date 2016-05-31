@@ -2,8 +2,9 @@ class Character {
 	setup(scene) {
 		// setup model
 		this.scene = scene;
-		var fairyGeom = new THREE.CubeGeometry(.125, .075, .05);
-		this.model = new THREE.Mesh(fairyGeom, new THREE.MeshPhongMaterial());
+		this.offset = 0;
+		var playerGeometry = new THREE.CubeGeometry(.125, .075, .05);
+		this.model = new THREE.Mesh(playerGeometry, new THREE.MeshPhongMaterial());
 		this.model.position.z = 0;
 		this.model.position.x = 6;
 		scene.add(this.model);
@@ -17,7 +18,7 @@ class Character {
 			x: null,
 			z: null
 		};
-		
+
 		this.inIntersection = false;
 		this.sectionDistance = 0;
 		this.direction = 0;
@@ -57,20 +58,20 @@ class Character {
 			var zz;
 			switch(this.startAngle) {
 				case 0:
-					xx = 4.5;
-					zz = 7.5;
+					xx = BUILDING_WIDTH;
+					zz = (BUILDING_WIDTH + BUILDING_MARGIN * 2);
 					break;
 				case 1:
-					xx = 7.5;
-					zz = -4.5;
+					xx = (BUILDING_WIDTH + BUILDING_MARGIN * 2);
+					zz = -BUILDING_WIDTH;
 					break;
 				case 2:
-					xx = -4.5;
-					zz = -7.5;
+					xx = -BUILDING_WIDTH;
+					zz = -(BUILDING_WIDTH + BUILDING_MARGIN * 2);
 					break;
 				case 3:
-					xx = -7.5;
-					zz = 4.5;
+					xx = -(BUILDING_WIDTH + BUILDING_MARGIN * 2);
+					zz = BUILDING_WIDTH;
 					break;
 
 			}
@@ -93,8 +94,8 @@ class Character {
 			// exiting a turn
 			if (this.addOn == -1) {
 				this.backing = {
-					x: this.backing.x + 12 * (this.startAngle == 3 || this.startAngle == 2 ? -1 : 1),
-					z: this.backing.z + 12 * (this.startAngle == 2 || this.startAngle == 1 ? -1 : 1)
+					x: this.backing.x + SPACING * (this.startAngle == 3 || this.startAngle == 2 ? -1 : 1),
+					z: this.backing.z + SPACING * (this.startAngle == 2 || this.startAngle == 1 ? -1 : 1)
 				};
 			}
 		} else {
@@ -103,7 +104,7 @@ class Character {
 				z: this.backing.z - 3 * Math.sin(this.direction * Math.PI / 2)
 			};
 		}
-		
+
 		this.pivot = null;
 	}
 
@@ -114,8 +115,8 @@ class Character {
 		}
 		if (window.controller.combination([[controller.DOWN, true], [controller.UP, false], [controller.SHIFT, false]]) && this.model.position.y >= -0.5) this.model.position.y -= 0.01;
 		if (window.controller.combination([[controller.UP, true], [controller.DOWN, false], [controller.SHIFT, false]]) && this.model.position.y <= 0.5) this.model.position.y += 0.01;
-		if (window.controller.pressed(controller.RIGHT) && offset <= 1) offset += 0.01;
-		if (window.controller.pressed(controller.LEFT) && offset >= -1) offset -= 0.01;
+		if (window.controller.pressed(controller.RIGHT) && this.offset <= 1) this.offset += 0.01;
+		if (window.controller.pressed(controller.LEFT) && this.offset >= -1) this.offset -= 0.01;
 
 		this.sectionDistance += MOVE_SPEED;
 		if (this.sectionDistance >= (this.inIntersection ? 3 : 9)) {
@@ -151,17 +152,18 @@ class Character {
 		if (DEBUG_VIEW) {
 			this.camera.rotation.x = -1;
 			this.camera.position.y = 10;
-			this.camera.position.x = 5;
+			this.camera.position.x = 6;
 			this.camera.position.z = 9;
-			this.model.position.y = -16;
+			this.model.position.y = -2;
 		} else {
 			this.camera.position.x = this.center.x + CAMERA_DISTANCE_BACK * Math.sin(this.direction * Math.PI / 2);
 			this.camera.position.z = this.center.z + CAMERA_DISTANCE_BACK * Math.cos(this.direction * Math.PI / 2);
 			this.camera.rotation.y = this.direction * Math.PI / 2 + ANGLING;
+			this.camera.position.y = this.model.position.y * 0.3;
 		}
 
-		this.model.position.x = this.center.x - offset * Math.cos(this.direction * Math.PI / 2);
-		this.model.position.z = this.center.z + offset * Math.sin(this.direction * Math.PI / 2);
+		this.model.position.x = this.center.x - this.offset * Math.cos(this.direction * Math.PI / 2);
+		this.model.position.z = this.center.z + this.offset * Math.sin(this.direction * Math.PI / 2);
 
 		this.model.rotation.y = this.direction * Math.PI / 2;
 

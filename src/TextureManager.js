@@ -70,7 +70,7 @@ function loadingDone() {
 	ground = new THREE.Mesh(geometry, texture);
 	ground.rotation.x = 3 * Math.PI / 2;
 	scene.add(ground);
-	ground.position.y = -18;
+	ground.position.y = BUILDING_WIDTH * -4;
 
 	window.character = new Character();
 	character.setup(scene);
