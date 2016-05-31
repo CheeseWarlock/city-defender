@@ -1,31 +1,31 @@
 textures = [
 	{
-		file: "a.png",
+		file: "src/img/building_exterior.png",
 		name: "exterior",
 		repeats: [9, 36],
 		transparent: true,
 		side: THREE.DoubleSide
 	},
 	{
-		file: "a.png",
+		file: "src/img/building_exterior.png",
 		name: "exterior_solid",
 		repeats: [9, 36],
 		side: THREE.DoubleSide
 	},
 	{
-		file: "a_interior.png",
+		file: "src/img/building_interior.png",
 		name: "interior",
 		repeats: [9, 36],
 		side: THREE.BackSide
 	},
 	{
-		file: "b.png",
+		file: "src/img/floor.png",
 		name: "floor",
 		repeats: [1, 1],
 		side: THREE.BackSide
 	},
 	{
-		file: "ceil.png",
+		file: "src/img/ceiling.png",
 		name: "ceiling",
 		repeats: [8, 8],
 		side: THREE.FrontSide
